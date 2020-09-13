@@ -1,0 +1,29 @@
+Epoch 1 : 2.048
+Epoch 2 : 1.797
+Epoch 3 : 1.675
+Epoch 4 : 1.583
+Epoch 5 : 1.509
+Epoch 6 : 1.437
+Epoch 7 : 1.369
+Epoch 8 : 1.313
+Epoch 9 : 1.267
+Epoch 10 : 1.224
+Classification Accuracy : 49.41%
+
+Results:
+'''Variations in terms of SkipBlocks''':
+        In terms of SkipBlock variation, I've played around when the actual addition takes place and also by adding a smaller convolution block in the skip path. Six Variations have been tried:
+        [1] Same as the original DLStudio SkipBlock. (SkipBlock 0)
+        [2] The Original BasicBlock from ResNet where ReLU is done after addition (SkipBlock 1)
+        [3] Similar to Original BasicBlock but now the BatchNorm is done after the addition as well. (SkipBlock 2)
+        [4] Similar to Original BasicBlock but ReLU is shifted before the addition. (SkipBlock 3)
+        [5] Similar to previous one but no ReLU before addition. (SkipBlock 4)
+        [6] A few convolution layers have been now added in the skip path after which addition takes place. (SkipBlock 5)
+
+'''Variation in terms of BMENet Depth'':
+        We can go as deep as required by specifying the depth paramter in arg parse. This basically repeats each SkipBlock that many nub=mber of times more. I've created BMENets that have 5 extra repeated SkipBlocks  and 10 extra repeated SkipBlocks at each stage.
+
+'''Conclusion''':
+	I got the slightly better accuracy for CIFAR-10 in SkipBlock 2. where BatchNorm and ReLU are done after the identity addition and that is what I've run. Also, I used a deeper version of BMENet which is twice as deeper compared to the original one.
+	I've also written the code for ImageNet(5 classes, commented in my current code submission) which will be submitted on the next due date.
+

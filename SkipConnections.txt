@@ -1,0 +1,48 @@
+Epoch 1: 1.613
+Epoch 2: 1.526
+Epoch 3: 1.462
+Epoch 4: 1.381
+Epoch 5: 1.264
+Epoch 6: 1.087
+Epoch 7: 0.765
+Epoch 8: 0.482
+Epoch 9: 0.276
+Epoch 10: 0.149
+Classification Accuracy: 39.55%
+
+Report:
+	I've tried different variations of the SkipBlock and different depth for the network itself. For ImageNet, I chose an image size of 256 x 256. For deeper networks, I observed the accuracy and loss getting stuck for several epochs at around 28%. This may be due to the fact the network is too deep and the data is too less (about 6000 images). This can be fixed with suitable data augmentation and by perhaps adding Dropout layers. In terms of SkipBlocks, the Conv Skip Path that I tried did not perform as well as Prof. Avinash Kak's originl SkipBlock (37% test accuracy). But SkipBlock3 which has ReLU only in pre-activation stage, did perform slightly better. That's the result that has been printed above. 
+
+'''Code''':
+	I also feel that there is a bug in the original BMENet code. The bug is that instead of creating new layers and creating a deep network, it loops through the same layer multiple times. I found this when I printed model.parameters() by torch and it never chnaged the number even when I chnaged the depth. This was because the depth parameter is just controlling the number of loops through the same layer rather than actually creating a deeper layer.
+	I've uploaded the code that satisfies the output required in the homework document. This code has been built on top of BMENet and SkipBlock. The following additional code has been added:
+	[1] Any depth BMENet can be run provided your GPU can handle it. (Bug Fix)
+	[2] 5 different variations of the SkipBlocks can be tried. The reference to these blocks have been provided below.
+	[3] Argument Parser has been added.
+	[4] Either ImageNet or Cifar10 can be used for training and testing
+	[5] Weights and results are saved.
+	[6] Official Torch ResNet, ResNext, and WideResNet Models can also be run.
+	[7] I've also uploaded the ImageNet downloader to piazza for ImageNet. That can also be incorporated into this code.
+	[8] Early Stopping Added
+
+'''Variations in terms of SkipBlocks''':
+	In terms of SkipBlock variation, I've played around when the actual addition takes place and also by adding a smaller convolution block (1x1) in the skip path. Six Variations have been tried:
+	[1] Same as the original DLStudio SkipBlock. This is very similar to the ReLU before addition block.(SkipBlock 0)
+	[2] The Original BasicBlock from ResNet where ReLU is done after addition (SkipBlock 1)
+	[3] Similar to Original BasicBlock but now the BatchNorm is done after the addition as well. (SkipBlock 2)
+	[4] Similar to original one but no ReLU before addition. (SkipBlock 3)
+	[5] A few convolution layers have been now added in the skip path after which addition takes place. This reduces the number of computations taking place. 1x1--->3x3--->1x1 (SkipBlock 4)
+	This post from towardsdatascience paints a good picture of the SkipBlocks used in my code.
+	"https://towardsdatascience.com/residual-blocks-building-blocks-of-resnet-fd90ca15d6ec"
+
+'''Variation in terms of BMENet Depth'':
+	We can go as deep as required by specifying the depth paramter in arg parse. This basically repeats each SkipBlock that many number of times more. The only issue with this is that the network overfits extremely quickly due to the lack of data and the extremely deep network. This can be fixed with suitable data augmentation.
+
+
+'''Training Parameters''':
+	lr = 1e-3
+	batch_size = 4
+	epochs = 10
+	optimizer = Adam
+	early_stop = 1
+	depth = 1
